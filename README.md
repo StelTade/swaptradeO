@@ -39,6 +39,47 @@ This repository contains the on-chain Cairo contracts, type definitions, helper 
 | **📈 Scalable Architecture**   | Optimized to handle high transaction volumes with minimal overhead.              | Ensures stability during market surges.                        |
 | **🛡 Security-Oriented Design** | Includes protections against reentrancy and invalid input manipulation.          | Enhances contract resilience and reliability.                  |
 | **📜 Transparency**            | All trades, cancellations, and events are logged publicly on-chain.              | Facilitates independent auditing and builds trust.             |
+| **🔮 Oracle Integration**      | Real-time price feeds protect against front-running and price manipulation.      | Ensures fair swap rates and user protection.                   |
+
+---
+
+## 🔮 Oracle Integration
+
+SwapTrade includes a comprehensive price oracle integration system that protects users from unfavorable trades:
+
+### Key Oracle Features
+
+- **🎯 Real-time Price Feeds**: Fetches accurate token prices from decentralized oracles
+- **🛡️ Minimum Rate Enforcement**: Automatically calculates and enforces fair minimum swap outputs
+- **⏰ Stale Data Protection**: Validates price freshness (configurable, default: 1 hour)
+- **📊 Slippage Management**: Configurable slippage tolerance (max 5%, default 1%)
+- **📡 Event Logging**: Comprehensive tracking of oracle usage and failures
+
+### Quick Oracle Setup
+
+```cairo
+// 1. Set oracle addresses for tokens
+set_oracle_address(0xETH, 0xORACLE_ADDRESS, 3600_u64)
+set_oracle_address(0xUSDC, 0xORACLE_ADDRESS, 3600_u64)
+
+// 2. Enable oracle protection
+set_oracle_enabled(true)
+
+// 3. Configure slippage (optional)
+set_max_slippage_bps(100_u256)  // 1%
+```
+
+### Using Oracle-Protected Swaps
+
+```cairo
+// Get quote with oracle prices
+let quote = get_swap_quote(token_in, token_out, amount_in);
+
+// Execute swap (oracle automatically enforces minimum)
+swap(token_in, token_out, amount_in, min_amount_out, recipient);
+```
+
+For detailed oracle documentation, see [ORACLE_INTEGRATION.md](ORACLE_INTEGRATION.md).
 
 ---
 
